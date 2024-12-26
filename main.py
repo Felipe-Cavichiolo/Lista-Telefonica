@@ -114,34 +114,19 @@ class ManipulaTerminal:
             input("Não há contatos na lista.")
             return
 
-        campos_contato = set()
-        campos_endereco = set()
-
         for contato in contatos:
-            campos_contato.update(contato.keys())
-            if "endereco" in contato:
-                campos_endereco.update(contato["endereco"].keys())
-
-        campos_contato = ["nome"] + sorted(campos_contato - {"nome"} - {"endereco"}) + ["endereco"]
-        campos_endereco = sorted(campos_endereco)
-
-        for contato in contatos:
-            ManipulaTerminal.MostraContato(contato)
+            ManipulaTerminal.MostraContato(contato, contatos)
             print("-" * 65)
-            
+
         input("Pressione Enter para continuar...")
     
-    def MostraContato(contato):
-        campos = set()
-
-        contatos = ManipulaArqTXT.CriaLista(main_instance.usuario.nome_usuario)
-
+    def MostraContato(contato, contatos):
         campos = set()
         campos_endereco = set()
-        
-        for contato in contatos:
-            campos.update(contato.keys())
-            campos_endereco.update(contato["endereco"].keys())
+
+        for contato_ in contatos:
+            campos.update(contato_.keys())
+            campos_endereco.update(contato_["endereco"].keys())
         
         campos = ["nome"] + sorted(campos - {"nome", "endereco"}) + ["endereco"]
         campos_endereco = sorted(campos_endereco)
@@ -150,12 +135,12 @@ class ManipulaTerminal:
             if campo == "endereco":
                 ManipulaTerminal.MostraEndereco(contato[campo])
                 continue
-            print(f"{campo.capitalize()}: {ManipulaTerminal.CapitalizaTodasPalavras(contato[campo])}")
-    
+            print(f"{campo.capitalize()}: {ManipulaTerminal.CapitalizaTodasPalavras(contato[campo])}", flush=True)
+
     def MostraEndereco(endereco):
         print("Endereço:")
         for campo in endereco:
-            print(f"\t{campo.capitalize()}: {ManipulaTerminal.CapitalizaTodasPalavras(endereco[campo])}")
+            print(f"\t{campo.capitalize()}: {ManipulaTerminal.CapitalizaTodasPalavras(endereco[campo])}", flush=True)
 
     def PesquisaContatos(usuario): #Mostra no terminal uma lista contendo os resultados de uma pesquisa realizado pelo usuário
         campo = ""
@@ -430,7 +415,7 @@ class Contato:
         print("Novo contato:")
         print("\nOs campos marcados com '*' são obrigatórios.\n")
 
-        nome = input(f"Qual o valor de 'nome'? *\n -> ")
+        nome = input(f"Qual o valor de 'nome'? *\n -> ").lower().strip()
 
         while not nome:
             print(f"O campo 'nome' é obrigatório. Por favor, preencha.")
